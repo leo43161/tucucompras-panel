@@ -1,0 +1,22 @@
+export interface CategoriaRef {
+  id?: number
+  nombre: string
+}
+
+export interface SubCategoriaRef {
+  id?: number
+  nombre: string
+}
+
+export interface ProductoDraft {
+  _localId: string
+  image_index: number
+  imagen_principal_url: string
+  nombre: string
+  descripcion: string
+  precio: number
+  precio_oferta: number | null
+  es_oferta: boolean
+  categoria: CategoriaRef
+  sub_categorias: SubCategoriaRef[]
+}
