@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   allowedDevOrigins: ['192.168.100.41', '10.20.20.5'],
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NODE_ENV === 'production' ? "https://tucucompras.com.ar/api" : "http://localhost/tucucompras/api",
+    NEXT_PUBLIC_API_URL: process.env.NODE_ENV === 'production' ? "https://tucucompras.com.ar/v1" : "http://localhost/tucucompras/api",
   },
   basePath: process.env.NODE_ENV === 'production' ? "/partner" : "",
 };
