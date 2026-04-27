@@ -67,6 +67,7 @@ jobs:
           server: ${{ secrets.PANEL_SERVER }}
           username: ${{ secrets.PANEL_USERNAME }}
           password: ${{ secrets.PANEL_PASSWORD }}
+          protocol: ftps # Usa ftps para mayor seguridad, o ftp si tu servidor no lo soporta
           port: 21
           local-dir: ./upload_dir/ # <-- Le decimos exactamente qué archivo subir
           server-dir: /public_html/partner/ # <-- La carpeta de destino en tu servidor
