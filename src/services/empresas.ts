@@ -25,3 +25,18 @@ export async function createEmpresa(input: CreateEmpresaInput): Promise<CreateRe
   const { data } = await api.post<CreateResponse>('/api/crear_empresa', input)
   return data.data
 }
+
+export async function editEmpresa(payload: {
+  id: number
+  nombre: string
+  cuit?: string | null
+  whatsapp_contacto: string
+  sitio_web?: string | null
+  direccion?: string | null
+}): Promise<void> {
+  await api.post('/api/editar_empresa', payload)
+}
+
+export async function deleteEmpresa(id: number): Promise<void> {
+  await api.post('/api/eliminar_empresa', { id })
+}

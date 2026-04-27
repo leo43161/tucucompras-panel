@@ -9,8 +9,9 @@ export interface SubCategoriaRef {
 }
 
 export interface ProductoDraft {
-  _localId: string
-  image_index: number
+  _localId?: string           // ← opcional
+  image_index?: number        // ← opcional
+  id?: number                 // ← NUEVO: id real si es un producto existente
   imagen_principal_url: string
   nombre: string
   descripcion: string

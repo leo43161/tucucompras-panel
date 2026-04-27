@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQueryClient, useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Loader2, Save, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -20,14 +20,15 @@ export function BatchEditor({ empresaId, drafts: initialDrafts, onDone, onReset 
   const [drafts, setDrafts] = useState<ProductoDraft[]>(initialDrafts)
   const [saving, setSaving] = useState(false)
 
+  const qc = useQueryClient()
   const catsQ = useQuery({ queryKey: ['categorias'], queryFn: listCategorias })
   const subsQ = useQuery({ queryKey: ['subcategorias'], queryFn: () => listSubCategorias() })
 
-  const updateDraft = (localId: string, updated: ProductoDraft) => {
+  const updateDraft = (localId: string | undefined, updated: ProductoDraft) => {
     setDrafts((ds) => ds.map((d) => (d._localId === localId ? updated : d)))
   }
 
-  const removeDraft = (localId: string) => {
+  const removeDraft = (localId: string | undefined) => {
     setDrafts((ds) => ds.filter((d) => d._localId !== localId))
   }
 
@@ -43,8 +44,10 @@ export function BatchEditor({ empresaId, drafts: initialDrafts, onDone, onReset 
       const res = await guardarProductosLote({ empresaId, products: drafts })
       if (res.failed.length === 0) {
         toast.success(`${res.saved.length} productos guardados`)
+        qc.invalidateQueries({ queryKey: ['productos', empresaId] })
         onDone()
       } else {
+        qc.invalidateQueries({ queryKey: ['productos', empresaId] })
         toast.warning(`Guardados: ${res.saved.length}, fallaron: ${res.failed.length}`, {
           description: res.failed.map(f => `#${f.index + 1}: ${f.error}`).join(' | '),
         })
