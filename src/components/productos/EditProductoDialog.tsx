@@ -74,15 +74,15 @@ export function EditProductoDialog({ producto, onClose, onSaved }: Props) {
             onRemove={onClose}
           />
         ) : (
-          <div className="flex justify-center py-10 text-slate-400">
+          <div className="flex justify-center py-10 text-muted-foreground">
             <Loader2 className="h-6 w-6 animate-spin" />
           </div>
         )}
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={saving}>Cancelar</Button>
-          <Button onClick={handleSave} disabled={saving || !draft}>
-            {saving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Guardando...</> : <><Save className="mr-2 h-4 w-4" /> Guardar</>}
+          <Button onClick={handleSave} disabled={saving || !draft} className="gradient-brand text-white font-semibold">
+            {saving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Guardando…</> : <><Save className="mr-2 h-4 w-4" /> Guardar</>}
           </Button>
         </DialogFooter>
       </DialogContent>

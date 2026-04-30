@@ -3,97 +3,56 @@
 @import "shadcn/tailwind.css";
 
 :root {
-  --background: #f8f8f8;
-  --foreground: #1d293d;
-  --card: #ffffff;
-  --card-foreground: #1d293d;
-  --popover: #ffffff;
-  --popover-foreground: #1d293d;
-  --primary: #6468f0;
+  /* Paleta unica (dark) — definida por el cliente */
+  --background: #020617;
+  --foreground: #f8fafc;
+  --card: #0f172a;
+  --card-foreground: #f8fafc;
+  --popover: #0f172a;
+  --popover-foreground: #f8fafc;
+  --primary: #3b82f6;
   --primary-foreground: #ffffff;
-  --secondary: #e4e8ef;
-  --secondary-foreground: #364050;
-  --muted: #f5f5f5;
-  --muted-foreground: #6c727e;
-  --accent: #e1e7fd;
-  --accent-foreground: #364050;
-  --destructive: #f14444;
-  --border: #d0d4db;
-  --input: #d0d4db;
-  --ring: #6468f0;
-  --chart-1: #6468f0;
-  --chart-2: #4f46e5;
-  --chart-3: #443bc9;
-  --chart-4: #3730a5;
-  --chart-5: #312d84;
-  --sidebar: #f5f5f5;
-  --sidebar-foreground: #1d293d;
-  --sidebar-primary: #6468f0;
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #38bdf8;
+  --accent-foreground: #020617;
+  --destructive: #ef4444;
+  --border: #1e293b;
+  --input: #1e293b;
+  --ring: #3b82f6;
+  --chart-1: #3b82f6;
+  --chart-2: #38bdf8;
+  --chart-3: #6366f1;
+  --chart-4: #0ea5e9;
+  --chart-5: #1d4ed8;
+  --sidebar: #0f172a;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #3b82f6;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e1e7fd;
-  --sidebar-accent-foreground: #364050;
-  --sidebar-border: #d0d4db;
-  --sidebar-ring: #6468f0;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: #1e293b;
+  --sidebar-ring: #3b82f6;
 
-  --font-sans: Inter, sans-serif;
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
   --font-serif: Merriweather, serif;
-  --font-mono: JetBrains Mono, monospace;
+  --font-mono: JetBrains Mono, ui-monospace, monospace;
 
-  --radius: 0.5rem;
-  
-  --shadow-2xs: 0px 4px 8px -1px rgb(0 0 0 / 0.05);
-  --shadow-xs: 0px 4px 8px -1px rgb(0 0 0 / 0.05);
-  --shadow-sm: 0px 4px 8px -1px rgb(0 0 0 / 0.10), 0px 1px 2px -2px rgb(0 0 0 / 0.10);
-  --shadow: 0px 4px 8px -1px rgb(0 0 0 / 0.10), 0px 1px 2px -2px rgb(0 0 0 / 0.10);
-  --shadow-md: 0px 4px 8px -1px rgb(0 0 0 / 0.10), 0px 2px 4px -2px rgb(0 0 0 / 0.10);
-  --shadow-lg: 0px 4px 8px -1px rgb(0 0 0 / 0.10), 0px 4px 6px -2px rgb(0 0 0 / 0.10);
-  --shadow-xl: 0px 4px 8px -1px rgb(0 0 0 / 0.10), 0px 8px 10px -2px rgb(0 0 0 / 0.10);
-  --shadow-2xl: 0px 4px 8px -1px rgb(0 0 0 / 0.25);
-  
+  --radius: 0.75rem;
+
+  --shadow-2xs: 0 1px 2px 0px rgb(0 0 0 / 0.20);
+  --shadow-xs:  0 1px 3px 0px rgb(0 0 0 / 0.25);
+  --shadow-sm:  0 2px 4px 0px rgb(0 0 0 / 0.30), 0 1px 2px -1px rgb(0 0 0 / 0.30);
+  --shadow:     0 4px 6px -1px rgb(0 0 0 / 0.35), 0 2px 4px -2px rgb(0 0 0 / 0.35);
+  --shadow-md:  0 8px 16px -4px rgb(0 0 0 / 0.40), 0 4px 6px -2px rgb(0 0 0 / 0.30);
+  --shadow-lg:  0 12px 24px -6px rgb(0 0 0 / 0.45), 0 6px 10px -4px rgb(0 0 0 / 0.30);
+  --shadow-xl:  0 20px 40px -10px rgb(0 0 0 / 0.50);
+  --shadow-2xl: 0 30px 60px -15px rgb(0 0 0 / 0.60);
 }
 
-.dark {
-  --background: #0f182b;
-  --foreground: #e3e8ef;
-  --card: #1d293d;
-  --card-foreground: #e3e8ef;
-  --popover: #1d293d;
-  --popover-foreground: #e3e8ef;
-  --primary: #818cf9;
-  --primary-foreground: #0f182b;
-  --secondary: #2f3848;
-  --secondary-foreground: #d0d4db;
-  --muted: #1d293d;
-  --muted-foreground: #9ba2ae;
-  --accent: #364050;
-  --accent-foreground: #d0d4db;
-  --destructive: #f14444;
-  --border: #4b5666;
-  --input: #4b5666;
-  --ring: #818cf9;
-  --chart-1: #818cf9;
-  --chart-2: #6468f0;
-  --chart-3: #4f46e5;
-  --chart-4: #443bc9;
-  --chart-5: #3730a5;
-  --sidebar: #1d293d;
-  --sidebar-foreground: #e3e8ef;
-  --sidebar-primary: #818cf9;
-  --sidebar-primary-foreground: #0f182b;
-  --sidebar-accent: #364050;
-  --sidebar-accent-foreground: #d0d4db;
-  --sidebar-border: #4b5666;
-  --sidebar-ring: #818cf9;
-  
-  --shadow-2xs: 0 1px 3px 0px rgb(0 0 0 / 0.05);
-  --shadow-xs: 0 1px 3px 0px rgb(0 0 0 / 0.05);
-  --shadow-sm: 0 1px 3px 0px rgb(0 0 0 / 0.10), 0 1px 2px -1px rgb(0 0 0 / 0.10);
-  --shadow: 0 1px 3px 0px rgb(0 0 0 / 0.10), 0 1px 2px -1px rgb(0 0 0 / 0.10);
-  --shadow-md: 0 1px 3px 0px rgb(0 0 0 / 0.10), 0 2px 4px -1px rgb(0 0 0 / 0.10);
-  --shadow-lg: 0 1px 3px 0px rgb(0 0 0 / 0.10), 0 4px 6px -1px rgb(0 0 0 / 0.10);
-  --shadow-xl: 0 1px 3px 0px rgb(0 0 0 / 0.10), 0 8px 10px -1px rgb(0 0 0 / 0.10);
-  --shadow-2xl: 0 1px 3px 0px rgb(0 0 0 / 0.25);
-}
+.dark { color-scheme: dark; }
 
 @theme inline {
   --color-background: var(--background);
@@ -138,12 +97,12 @@
   --radius-xl: calc(var(--radius) + 4px);
 
   --shadow-2xs: var(--shadow-2xs);
-  --shadow-xs: var(--shadow-xs);
-  --shadow-sm: var(--shadow-sm);
-  --shadow: var(--shadow);
-  --shadow-md: var(--shadow-md);
-  --shadow-lg: var(--shadow-lg);
-  --shadow-xl: var(--shadow-xl);
+  --shadow-xs:  var(--shadow-xs);
+  --shadow-sm:  var(--shadow-sm);
+  --shadow:     var(--shadow);
+  --shadow-md:  var(--shadow-md);
+  --shadow-lg:  var(--shadow-lg);
+  --shadow-xl:  var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
 }
 
@@ -151,10 +110,41 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
+  html, body {
     @apply bg-background text-foreground;
   }
   html {
-    @apply font-sans;
+    @apply font-sans antialiased;
   }
+  /* Selección con primary */
+  ::selection { background: rgba(59, 130, 246, 0.35); color: #f8fafc; }
+}
+
+/* Utilidades propias del proyecto */
+@layer utilities {
+  .glass {
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .gradient-brand {
+    background: linear-gradient(135deg, #3b82f6 0%, #38bdf8 100%);
+  }
+  .gradient-text-brand {
+    background: linear-gradient(135deg, #3b82f6 0%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .ring-brand-soft {
+    box-shadow: 0 0 0 1px rgba(59,130,246,0.25), 0 0 24px -4px rgba(59,130,246,0.35);
+  }
+  .bg-app-grid {
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59,130,246,0.15), transparent 70%),
+      radial-gradient(ellipse 60% 50% at 90% 110%, rgba(56,189,248,0.10), transparent 70%);
+  }
+  .scrollbar-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 8px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #334155; }
 }

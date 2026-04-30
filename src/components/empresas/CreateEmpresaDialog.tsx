@@ -59,9 +59,9 @@ export function CreateEmpresaDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2">
+        <Button className="gap-2 gradient-brand text-white font-semibold">
           <Plus className="h-4 w-4" />
-          Cargar Nueva Empresa
+          Nueva empresa
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
@@ -91,8 +91,8 @@ export function CreateEmpresaDialog() {
             <Input value={form.direccion} onChange={handleChange('direccion')} />
           </Field>
 
-          <div className="border-t pt-4 space-y-4">
-            <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
+          <div className="border-t border-border pt-4 space-y-4">
+            <p className="text-xs uppercase tracking-wider font-medium text-muted-foreground">
               Datos del usuario dueño
             </p>
             <Field label="Nombre completo *">
@@ -107,10 +107,10 @@ export function CreateEmpresaDialog() {
             <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={mutation.isPending}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={mutation.isPending}>
+            <Button type="submit" disabled={mutation.isPending} className="gradient-brand text-white font-semibold">
               {mutation.isPending ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creando...</>
-              ) : 'Crear Empresa'}
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creando…</>
+              ) : 'Crear empresa'}
             </Button>
           </DialogFooter>
         </form>

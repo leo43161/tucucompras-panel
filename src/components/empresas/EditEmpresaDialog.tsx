@@ -92,8 +92,8 @@ export function EditEmpresaDialog({ empresa, onClose }: Props) {
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose} disabled={mutation.isPending}>Cancelar</Button>
-            <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Guardando...</> : 'Guardar'}
+            <Button type="submit" disabled={mutation.isPending} className="gradient-brand text-white font-semibold">
+              {mutation.isPending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Guardando…</> : 'Guardar cambios'}
             </Button>
           </DialogFooter>
         </form>
