@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { Loader2, Package, Search, Plus, CheckCircle2, EyeOff, Filter } from 'lucide-react'
+import { Loader2, Package, Search, Plus, Eye, EyeOff, Filter } from 'lucide-react'
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -20,7 +20,7 @@ import {
   type ProductoLoaded,
 } from '@/services/productos'
 
-type Filter = 'todos' | 'activos' | 'inactivos'
+type Filter = 'todos' | 'visibles' | 'ocultos'
 
 interface Props {
   empresaId: number
@@ -46,22 +46,22 @@ export function ProductoList({ empresaId, ctaHref }: Props) {
 
   const stats = useMemo(() => {
     const total = productos.length
-    let activos = 0
-    let inactivos = 0
+    let visibles = 0
+    let ocultos = 0
     productos.forEach((p) => {
-      const { activo } = getEstado(p)
-      if (activo) activos++
-      else inactivos++
+      const { visible } = getEstado(p)
+      if (visible) visibles++
+      else ocultos++
     })
-    return { total, activos, inactivos }
+    return { total, visibles, ocultos }
   }, [productos])
 
   const filtrados = useMemo(() => {
     const q = busqueda.trim().toLowerCase()
     return productos.filter((p) => {
-      const { activo } = getEstado(p)
-      if (filtro === 'activos' && !activo) return false
-      if (filtro === 'inactivos' && activo) return false
+      const { visible } = getEstado(p)
+      if (filtro === 'visibles' && !visible) return false
+      if (filtro === 'ocultos' && visible) return false
       if (!q) return true
       return [p.nombre, p.descripcion, p.categoria?.nombre]
         .filter(Boolean)
@@ -81,18 +81,6 @@ export function ProductoList({ empresaId, ctaHref }: Props) {
       toast.error('Error al eliminar', { description: err?.response?.data?.message ?? err.message })
     } finally {
       setDeletingPending(false)
-    }
-  }
-
-  const handleToggleActivo = async (p: ProductoLoaded) => {
-    const { activo } = getEstado(p)
-    const nuevoValor: 0 | 1 = activo ? 0 : 1
-    try {
-      await toggleEstadoProducto(p.id, 'activo', nuevoValor)
-      toast.success(nuevoValor === 1 ? 'Producto activado' : 'Producto desactivado')
-      invalidate()
-    } catch (err: any) {
-      toast.error('Error al actualizar', { description: err?.response?.data?.message ?? err.message })
     }
   }
 
@@ -120,8 +108,8 @@ export function ProductoList({ empresaId, ctaHref }: Props) {
             <h2 className="font-semibold text-lg">Productos cargados</h2>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
               <span><strong className="text-foreground">{stats.total}</strong> total</span>
-              <span className="flex items-center gap-1"><CheckCircle2 className="h-3 w-3 text-primary" /> {stats.activos} activos</span>
-              <span className="flex items-center gap-1"><EyeOff className="h-3 w-3" /> {stats.inactivos} inactivos</span>
+              <span className="flex items-center gap-1"><Eye className="h-3 w-3 text-primary" /> {stats.visibles} visibles</span>
+              <span className="flex items-center gap-1"><EyeOff className="h-3 w-3" /> {stats.ocultos} ocultos</span>
             </div>
           </div>
         </div>
@@ -142,11 +130,11 @@ export function ProductoList({ empresaId, ctaHref }: Props) {
         <FilterTab active={filtro === 'todos'} onClick={() => setFiltro('todos')}>
           <Filter className="h-3 w-3" /> Todos ({stats.total})
         </FilterTab>
-        <FilterTab active={filtro === 'activos'} onClick={() => setFiltro('activos')}>
-          <CheckCircle2 className="h-3 w-3" /> Activos ({stats.activos})
+        <FilterTab active={filtro === 'visibles'} onClick={() => setFiltro('visibles')}>
+          <Eye className="h-3 w-3" /> Visibles ({stats.visibles})
         </FilterTab>
-        <FilterTab active={filtro === 'inactivos'} onClick={() => setFiltro('inactivos')}>
-          <EyeOff className="h-3 w-3" /> Inactivos ({stats.inactivos})
+        <FilterTab active={filtro === 'ocultos'} onClick={() => setFiltro('ocultos')}>
+          <EyeOff className="h-3 w-3" /> Ocultos ({stats.ocultos})
         </FilterTab>
       </div>
 
@@ -191,7 +179,6 @@ export function ProductoList({ empresaId, ctaHref }: Props) {
             producto={p}
             onEdit={() => setEditing(p)}
             onDelete={() => setDeleting(p)}
-            onToggleActivo={() => handleToggleActivo(p)}
             onToggleVisible={() => handleToggleVisible(p)}
           />
         ))}

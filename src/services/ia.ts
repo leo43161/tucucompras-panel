@@ -24,6 +24,6 @@ export async function analyzeProducts(params: {
 
   return data.data.map((d) => ({
     ...d,
-    _localId: "crypto.randomUUID()",
+    _localId: crypto.randomUUID(),
   }))
 }

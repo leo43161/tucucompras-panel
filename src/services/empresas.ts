@@ -16,6 +16,19 @@ interface CreateResponse {
   }
 }
 
+export interface EditEmpresaPayload {
+  id: number
+  nombre: string
+  cuit?: string | null
+  whatsapp_contacto: string
+  sitio_web?: string | null
+  direccion?: string | null
+  logo_url?: string | null
+  banner_url?: string | null
+  latitud?: number | null
+  longitud?: number | null
+}
+
 export async function listEmpresas(): Promise<Empresa[]> {
   const { data } = await api.get<ListResponse>('/api/listar_empresas')
   return data.data
@@ -26,14 +39,7 @@ export async function createEmpresa(input: CreateEmpresaInput): Promise<CreateRe
   return data.data
 }
 
-export async function editEmpresa(payload: {
-  id: number
-  nombre: string
-  cuit?: string | null
-  whatsapp_contacto: string
-  sitio_web?: string | null
-  direccion?: string | null
-}): Promise<void> {
+export async function editEmpresa(payload: EditEmpresaPayload): Promise<void> {
   await api.post('/api/editar_empresa', payload)
 }
 

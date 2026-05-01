@@ -1,7 +1,7 @@
 "use client"
 import { useState } from 'react'
 import {
-  Pencil, Trash2, Tag, EyeOff, ImageOff, MoreVertical, Eye, Power, PowerOff,
+  Pencil, Trash2, Tag, EyeOff, ImageOff, MoreVertical, Eye,
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -15,12 +15,11 @@ interface Props {
   producto: ProductoLoaded
   onEdit: () => void
   onDelete: () => void
-  onToggleActivo?: () => void
   onToggleVisible?: () => void
 }
 
 export function ProductoListItem({
-  producto, onEdit, onDelete, onToggleActivo, onToggleVisible,
+  producto, onEdit, onDelete, onToggleVisible,
 }: Props) {
   const apiBase = process.env.NEXT_PUBLIC_API_URL
   const imageSrc = producto.imagen_principal_url?.startsWith('http')
@@ -28,14 +27,14 @@ export function ProductoListItem({
     : `${apiBase}/${producto.imagen_principal_url}`
 
   const fmt = (n: number) => new Intl.NumberFormat('es-AR').format(n)
-  const { activo, visible } = getEstado(producto)
+  const { visible } = getEstado(producto)
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <Card
       className={[
         'group flex gap-3 p-0 hover:border-primary/40 transition-colors',
-        !activo && 'opacity-60',
+        !visible && 'opacity-60',
       ].join(' ')}
     >
       <div className="h-20 w-20 shrink-0 rounded-lg overflow-hidden bg-muted m-3 mr-0 relative">
@@ -46,9 +45,9 @@ export function ProductoListItem({
             <ImageOff className="h-6 w-6" />
           </div>
         )}
-        {!activo && (
+        {!visible && (
           <div className="absolute inset-0 bg-background/60 grid place-items-center">
-            <PowerOff className="h-5 w-5 text-muted-foreground" />
+            <EyeOff className="h-5 w-5 text-muted-foreground" />
           </div>
         )}
       </div>
@@ -58,12 +57,7 @@ export function ProductoListItem({
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="font-semibold truncate">{producto.nombre}</h3>
-              {!activo && (
-                <Badge variant="outline" className="text-[10px] uppercase border-muted-foreground/30 text-muted-foreground">
-                  Inactivo
-                </Badge>
-              )}
-              {activo && !visible && (
+              {!visible && (
                 <Badge variant="outline" className="text-[10px] uppercase gap-1">
                   <EyeOff className="h-2.5 w-2.5" /> Oculto
                 </Badge>
@@ -105,16 +99,9 @@ export function ProductoListItem({
               </PopoverTrigger>
               <PopoverContent align="end" className="w-56 p-1">
                 <MenuItem
-                  icon={activo ? <PowerOff className="h-4 w-4" /> : <Power className="h-4 w-4 text-primary" />}
-                  onClick={() => { setMenuOpen(false); onToggleActivo?.() }}
-                  disabled={!onToggleActivo}
-                >
-                  {activo ? 'Desactivar' : 'Activar'}
-                </MenuItem>
-                <MenuItem
                   icon={visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   onClick={() => { setMenuOpen(false); onToggleVisible?.() }}
-                  disabled={!onToggleVisible || !activo}
+                  disabled={!onToggleVisible}
                 >
                   {visible ? 'Ocultar al público' : 'Mostrar al público'}
                 </MenuItem>

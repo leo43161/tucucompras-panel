@@ -22,6 +22,8 @@ export interface CreateEmpresaInput {
   direccion?: string
   latitud?: number
   longitud?: number
+  logo_url?: string
+  banner_url?: string
   email: string
   nombre_completo: string
 }
