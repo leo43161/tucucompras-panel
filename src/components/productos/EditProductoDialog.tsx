@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Button } from '@/components/ui/button'
 import { ProductDraftCard } from './ProductDraftCard'
 import { listCategorias, listSubCategorias } from '@/services/categorias'
-import { editProducto, type ProductoLoaded } from '@/services/productos'
+import { editProducto, uploadProductImage, type ProductoLoaded } from '@/services/productos'
 import type { ProductoDraft } from '@/types/batch'
 
 interface Props {
@@ -30,6 +30,7 @@ const loadedToDraft = (p: ProductoLoaded): ProductoDraft => ({
 
 export function EditProductoDialog({ producto, onClose, onSaved }: Props) {
   const [draft, setDraft] = useState<ProductoDraft | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
   const [saving, setSaving] = useState(false)
 
   const catsQ = useQuery({ queryKey: ['categorias'], queryFn: listCategorias })
@@ -37,6 +38,7 @@ export function EditProductoDialog({ producto, onClose, onSaved }: Props) {
 
   useEffect(() => {
     setDraft(producto ? loadedToDraft(producto) : null)
+    setImageFile(null)
   }, [producto])
 
   const handleSave = async () => {
@@ -47,7 +49,14 @@ export function EditProductoDialog({ producto, onClose, onSaved }: Props) {
     }
     setSaving(true)
     try {
-      await editProducto(draft)
+      let finalDraft = draft
+      if (imageFile) {
+        toast.loading('Subiendo imagen…', { id: 'upload' })
+        const url = await uploadProductImage(imageFile)
+        toast.dismiss('upload')
+        finalDraft = { ...draft, imagen_principal_url: url }
+      }
+      await editProducto(finalDraft)
       toast.success('Producto actualizado')
       onSaved()
     } catch (err: any) {
@@ -72,6 +81,8 @@ export function EditProductoDialog({ producto, onClose, onSaved }: Props) {
             subCategorias={subsQ.data}
             onChange={setDraft}
             onRemove={onClose}
+            imageFile={imageFile}
+            onImageChange={setImageFile}
           />
         ) : (
           <div className="flex justify-center py-10 text-muted-foreground">

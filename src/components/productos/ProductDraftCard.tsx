@@ -1,5 +1,6 @@
 "use client"
-import { Trash2, DollarSign, Tag } from 'lucide-react'
+import { useRef } from 'react'
+import { Trash2, DollarSign, Tag, Upload, X, ImageOff } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -18,29 +19,99 @@ interface Props {
   subCategorias: SubCategoria[]
   onChange: (draft: ProductoDraft) => void
   onRemove: () => void
+  imageFile?: File | null
+  onImageChange?: (file: File | null) => void
 }
 
-export function ProductDraftCard({ draft, index, categorias, subCategorias, onChange, onRemove }: Props) {
+export function ProductDraftCard({ draft, index, categorias, subCategorias, onChange, onRemove, imageFile, onImageChange }: Props) {
   const apiBase = process.env.NEXT_PUBLIC_API_URL
-  const imageSrc = draft.imagen_principal_url.startsWith('http')
-    ? draft.imagen_principal_url
-    : `${apiBase}/${draft.imagen_principal_url}`
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const update = (patch: Partial<ProductoDraft>) => onChange({ ...draft, ...patch })
+
+  const previewSrc = imageFile
+    ? URL.createObjectURL(imageFile)
+    : draft.imagen_principal_url
+      ? (draft.imagen_principal_url.startsWith('http')
+        ? draft.imagen_principal_url
+        : `${apiBase}/${draft.imagen_principal_url}`)
+      : null
+
+  const handleFile = (file: File) => {
+    if (!file.type.startsWith('image/')) return
+    onImageChange?.(file)
+  }
+
+  const removeImage = () => {
+    onImageChange?.(null)
+    update({ imagen_principal_url: '' })
+  }
 
   return (
     <Card className="overflow-hidden border-border bg-card p-0">
       <div className="flex flex-col md:flex-row">
         <div className="md:w-52 shrink-0 relative bg-muted">
-          <img src={imageSrc} alt="" className="w-full h-52 md:h-full object-cover" />
-          <span className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded font-semibold">
-            #{index + 1}
-          </span>
-          {draft.es_oferta && (
-            <span className="absolute bottom-2 left-2 bg-accent text-accent-foreground text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded">
-              Oferta
-            </span>
+          {previewSrc ? (
+            <div className="relative w-full h-52 md:h-full group">
+              <img src={previewSrc} alt="" className="w-full h-full object-cover" />
+              <span className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded font-semibold z-10">
+                #{index + 1}
+              </span>
+              {draft.es_oferta && (
+                <span className="absolute bottom-2 left-2 bg-accent text-accent-foreground text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded z-10">
+                  Oferta
+                </span>
+              )}
+              {onImageChange && (
+                <>
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="absolute top-2 right-2 z-10 bg-black/70 text-white rounded-full p-1.5 hover:bg-destructive transition-colors"
+                    title="Quitar imagen"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute inset-x-2 bottom-2 z-10 bg-black/70 text-white text-xs rounded-md py-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    Cambiar imagen
+                  </button>
+                </>
+              )}
+            </div>
+          ) : (
+            <div
+              onClick={() => onImageChange && fileInputRef.current?.click()}
+              className={[
+                'w-full h-52 md:h-full flex flex-col items-center justify-center gap-2 px-4 text-center',
+                onImageChange ? 'cursor-pointer hover:bg-muted/80 transition-colors' : '',
+              ].join(' ')}
+            >
+              <span className="h-10 w-10 rounded-full grid place-items-center bg-primary/15 text-primary border border-primary/20">
+                {onImageChange ? <Upload className="h-5 w-5" /> : <ImageOff className="h-5 w-5" />}
+              </span>
+              {onImageChange && (
+                <>
+                  <p className="text-xs font-semibold text-muted-foreground">Subí una imagen</p>
+                  <p className="text-[10px] text-muted-foreground">opcional</p>
+                </>
+              )}
+              <span className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded font-semibold">
+                #{index + 1}
+              </span>
+            </div>
           )}
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
+          />
         </div>
 
         <div className="flex-1 p-4 md:p-5 space-y-4">
