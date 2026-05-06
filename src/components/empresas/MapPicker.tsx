@@ -10,7 +10,9 @@ interface Props {
   onChange: (lat: number, lng: number) => void
 }
 
-export function MapPicker({ lat, lng, onChange }: Props) {
+export function MapPicker({ lat: latRaw, lng: lngRaw, onChange }: Props) {
+  const lat = latRaw !== null && latRaw !== undefined ? Number(latRaw) : null
+  const lng = lngRaw !== null && lngRaw !== undefined ? Number(lngRaw) : null
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const markerRef = useRef<any>(null)
