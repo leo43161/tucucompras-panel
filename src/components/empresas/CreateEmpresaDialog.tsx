@@ -1,5 +1,6 @@
 "use client"
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import {
@@ -16,15 +17,22 @@ import { FormSection, Field } from './FormBits'
 import { CreatedEmpresaSuccess } from './CreatedEmpresaSuccess'
 import type { CreateEmpresaInput } from '@/types/domain'
 
+const MapPicker = dynamic(
+  () => import('./MapPicker').then((m) => ({ default: m.MapPicker })),
+  { ssr: false, loading: () => <div className="h-64 w-full rounded-lg bg-muted animate-pulse" /> },
+)
+
 const emptyForm: CreateEmpresaInput = {
   nombre: '',
-  cuit: '',
+  cuit: undefined,
   whatsapp_contacto: '',
-  sitio_web: '',
-  direccion: '',
+  sitio_web: undefined,
+  direccion: undefined,
   email: '',
   nombre_completo: '',
-  logo_url: '',
+  logo_url: undefined,
+  latitud: undefined,
+  longitud: undefined,
 }
 
 export function CreateEmpresaDialog() {
@@ -63,17 +71,21 @@ export function CreateEmpresaDialog() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!form.nombre || !form.whatsapp_contacto || !form.email || !form.nombre_completo) {
+    if (!form.nombre?.trim() || !form.whatsapp_contacto?.trim() || !form.email?.trim() || !form.nombre_completo?.trim()) {
       toast.error('Completá los campos obligatorios')
       return
     }
-    // Limpieza: vacios → undefined
     const payload: CreateEmpresaInput = {
-      ...form,
-      cuit: form.cuit || undefined,
-      sitio_web: form.sitio_web || undefined,
-      direccion: form.direccion || undefined,
+      nombre: form.nombre.trim(),
+      whatsapp_contacto: form.whatsapp_contacto.trim(),
+      email: form.email.trim(),
+      nombre_completo: form.nombre_completo.trim(),
+      cuit: form.cuit?.trim() || undefined,
+      sitio_web: form.sitio_web?.trim() || undefined,
+      direccion: form.direccion?.trim() || undefined,
       logo_url: form.logo_url || undefined,
+      latitud: form.latitud ?? undefined,
+      longitud: form.longitud ?? undefined,
     }
     mutation.mutate(payload)
   }
@@ -193,32 +205,24 @@ export function CreateEmpresaDialog() {
                   onClick={() => setShowAdvanced(true)}
                   className="text-xs text-muted-foreground hover:text-primary transition-colors"
                 >
-                  + Agregar coordenadas GPS (avanzado)
+                  + Marcar ubicación en mapa
                 </button>
               ) : (
-                <div className="grid grid-cols-2 gap-3 rounded-lg border border-dashed border-border p-3">
-                  <Field
-                    label="Latitud"
-                    type="number"
-                    inputMode="decimal"
-                    step="any"
-                    value={form.latitud ?? ''}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, latitud: e.target.value ? Number(e.target.value) : undefined }))
-                    }
-                    placeholder="-26.8083"
+                <div className="rounded-lg border border-dashed border-border p-3 space-y-2">
+                  <MapPicker
+                    lat={form.latitud ?? null}
+                    lng={form.longitud ?? null}
+                    onChange={(lat, lng) => setForm((f) => ({ ...f, latitud: lat, longitud: lng }))}
                   />
-                  <Field
-                    label="Longitud"
-                    type="number"
-                    inputMode="decimal"
-                    step="any"
-                    value={form.longitud ?? ''}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, longitud: e.target.value ? Number(e.target.value) : undefined }))
-                    }
-                    placeholder="-65.2176"
-                  />
+                  {(form.latitud !== undefined || form.longitud !== undefined) && (
+                    <button
+                      type="button"
+                      onClick={() => setForm((f) => ({ ...f, latitud: undefined, longitud: undefined }))}
+                      className="text-xs text-destructive hover:underline"
+                    >
+                      Quitar coordenadas
+                    </button>
+                  )}
                 </div>
               )}
             </FormSection>

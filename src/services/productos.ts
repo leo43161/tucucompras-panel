@@ -45,7 +45,12 @@ export async function guardarProductosLote(params: {
 }) {
   const payload = {
     empresa_id: params.empresaId,
-    products: params.products.map(({ _localId, image_index, id, ...p }) => p),
+    products: params.products.map(({ _localId, image_index, id, ...p }) => ({
+      ...p,
+      descripcion: p.descripcion?.trim() || null,
+      imagen_principal_url: p.imagen_principal_url?.trim() || null,
+      precio_oferta: p.precio_oferta ?? null,
+    })),
   }
   const { data } = await api.post<Resp<BatchResponse>>('/api/ingresar_productos_lote', payload)
   return data.data
@@ -59,7 +64,13 @@ export async function listProductos(empresaId: number): Promise<ProductoLoaded[]
 }
 
 export async function editProducto(draft: ProductoDraft): Promise<void> {
-  const { _localId, image_index, ...payload } = draft
+  const { _localId, image_index, ...rest } = draft
+  const payload = {
+    ...rest,
+    descripcion: rest.descripcion?.trim() || null,
+    imagen_principal_url: rest.imagen_principal_url?.trim() || null,
+    precio_oferta: rest.precio_oferta ?? null,
+  }
   await api.post('/api/editar_producto', payload)
 }
 

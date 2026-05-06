@@ -1,10 +1,16 @@
 "use client"
 import { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import {
   Loader2, Building2, Phone, Globe, MapPin, Hash, Image as ImageIcon, Save,
 } from 'lucide-react'
+
+const MapPicker = dynamic(
+  () => import('./MapPicker').then((m) => ({ default: m.MapPicker })),
+  { ssr: false, loading: () => <div className="h-64 w-full rounded-lg bg-muted animate-pulse" /> },
+)
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription,
 } from '@/components/ui/dialog'
@@ -27,13 +33,13 @@ interface FormState {
   direccion: string
   logo_url: string
   banner_url: string
-  latitud: string
-  longitud: string
+  latitud: number | null
+  longitud: number | null
 }
 
 const emptyState: FormState = {
   nombre: '', cuit: '', whatsapp_contacto: '', sitio_web: '', direccion: '',
-  logo_url: '', banner_url: '', latitud: '', longitud: '',
+  logo_url: '', banner_url: '', latitud: null, longitud: null,
 }
 
 export function EditEmpresaDialog({ empresa, onClose }: Props) {
@@ -51,8 +57,8 @@ export function EditEmpresaDialog({ empresa, onClose }: Props) {
         direccion: empresa.direccion ?? '',
         logo_url: empresa.logo_url ?? '',
         banner_url: empresa.banner_url ?? '',
-        latitud: empresa.latitud != null ? String(empresa.latitud) : '',
-        longitud: empresa.longitud != null ? String(empresa.longitud) : '',
+        latitud: empresa.latitud ?? null,
+        longitud: empresa.longitud ?? null,
       })
       setShowAdvanced(empresa.latitud != null || empresa.longitud != null)
     }
@@ -61,15 +67,15 @@ export function EditEmpresaDialog({ empresa, onClose }: Props) {
   const mutation = useMutation({
     mutationFn: () => editEmpresa({
       id: empresa!.id,
-      nombre: form.nombre,
-      cuit: form.cuit || null,
-      whatsapp_contacto: form.whatsapp_contacto,
-      sitio_web: form.sitio_web || null,
-      direccion: form.direccion || null,
+      nombre: form.nombre.trim(),
+      cuit: form.cuit.trim() || null,
+      whatsapp_contacto: form.whatsapp_contacto.trim(),
+      sitio_web: form.sitio_web.trim() || null,
+      direccion: form.direccion.trim() || null,
       logo_url: form.logo_url || null,
       banner_url: form.banner_url || null,
-      latitud: form.latitud ? Number(form.latitud) : null,
-      longitud: form.longitud ? Number(form.longitud) : null,
+      latitud: form.latitud,
+      longitud: form.longitud,
     }),
     onSuccess: () => {
       toast.success('Empresa actualizada')
@@ -84,13 +90,13 @@ export function EditEmpresaDialog({ empresa, onClose }: Props) {
     },
   })
 
-  const handle = <K extends keyof FormState>(field: K) =>
+  const handle = <K extends keyof Pick<FormState, 'nombre' | 'cuit' | 'whatsapp_contacto' | 'sitio_web' | 'direccion' | 'logo_url' | 'banner_url'>>(field: K) =>
     (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm((f) => ({ ...f, [field]: e.target.value }))
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!form.nombre || !form.whatsapp_contacto) {
+    if (!form.nombre.trim() || !form.whatsapp_contacto.trim()) {
       toast.error('Completá los campos obligatorios')
       return
     }
@@ -210,28 +216,25 @@ export function EditEmpresaDialog({ empresa, onClose }: Props) {
                 onClick={() => setShowAdvanced(true)}
                 className="text-xs text-muted-foreground hover:text-primary transition-colors"
               >
-                + Agregar/editar coordenadas GPS (avanzado)
+                + Marcar ubicación en mapa
               </button>
             ) : (
-              <div className="grid grid-cols-2 gap-3 rounded-lg border border-dashed border-border p-3">
-                <Field
-                  label="Latitud"
-                  type="number"
-                  inputMode="decimal"
-                  step="any"
-                  value={form.latitud}
-                  onChange={handle('latitud')}
-                  placeholder="-26.8083"
+              <div className="rounded-lg border border-dashed border-border p-3 space-y-2">
+                <MapPicker
+                  lat={form.latitud}
+                  lng={form.longitud}
+                  onChange={(lat, lng) => setForm((f) => ({ ...f, latitud: lat, longitud: lng }))}
                 />
-                <Field
-                  label="Longitud"
-                  type="number"
-                  inputMode="decimal"
-                  step="any"
-                  value={form.longitud}
-                  onChange={handle('longitud')}
-                  placeholder="-65.2176"
-                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForm((f) => ({ ...f, latitud: null, longitud: null }))
+                    setShowAdvanced(false)
+                  }}
+                  className="text-xs text-destructive hover:underline"
+                >
+                  Quitar coordenadas
+                </button>
               </div>
             )}
           </FormSection>

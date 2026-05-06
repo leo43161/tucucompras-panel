@@ -4,7 +4,10 @@
       "Bash(extract-text \"E:\\\\leo\\\\tucucompras\\\\db\\\\informe_bd_tucucom.docx\")",
       "Bash(pandoc \"E:\\\\leo\\\\tucucompras\\\\db\\\\informe_bd_tucucom.docx\" -o /tmp/informe.md)",
       "Read(//tmp/**)",
-      "PowerShell($path = \"E:\\\\leo\\\\tucucompras\\\\db\\\\informe_bd_tucucom.docx\"; $tmp = \"$env:TEMP\\\\informe_extract\"; if \\(Test-Path $tmp\\) { Remove-Item $tmp -Recurse -Force }; Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory\\($path, $tmp\\); $xml = Get-Content \"$tmp\\\\word\\\\document.xml\" -Raw; $xml -replace '<[^>]+>', \"`n\" | Out-String | ForEach-Object { \\($_ -split \"`n\" | Where-Object { $_.Trim\\(\\) -ne \"\" }\\) -join \"`n\" })"
+      "PowerShell($path = \"E:\\\\leo\\\\tucucompras\\\\db\\\\informe_bd_tucucom.docx\"; $tmp = \"$env:TEMP\\\\informe_extract\"; if \\(Test-Path $tmp\\) { Remove-Item $tmp -Recurse -Force }; Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory\\($path, $tmp\\); $xml = Get-Content \"$tmp\\\\word\\\\document.xml\" -Raw; $xml -replace '<[^>]+>', \"`n\" | Out-String | ForEach-Object { \\($_ -split \"`n\" | Where-Object { $_.Trim\\(\\) -ne \"\" }\\) -join \"`n\" })",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npx next *)"
     ]
   }
 }
