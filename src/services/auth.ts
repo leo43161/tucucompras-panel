@@ -30,42 +30,84 @@ export async function login(email: string, password: string): Promise<Session> {
 }
 
 export function logout() {
+  if (typeof window === 'undefined') return
   localStorage.removeItem(TOKEN_KEY)
 }
 
-export function hasToken(): boolean {
-  if (typeof window === 'undefined') return false
-  return !!localStorage.getItem(TOKEN_KEY)
+export function redirectToLogin() {
+  if (typeof window === 'undefined') return
+  if (window.location.pathname !== '/login') {
+    window.location.replace('/login')
+  }
 }
 
-/**
- * Decodifica el JWT del localStorage y devuelve la sesión actual.
- * No valida la firma (eso lo hace el backend) — solo lee el payload
- * para que la UI pueda renderizar condicionalmente según el rol.
- */
-export function getSession(): Session | null {
+export function getRawToken(): string | null {
   if (typeof window === 'undefined') return null
-  const token = localStorage.getItem(TOKEN_KEY)
-  if (!token) return null
+  return localStorage.getItem(TOKEN_KEY)
+}
+
+function decodePayload(token: string): { exp: number; data: any } | null {
   try {
     const parts = token.split('.')
     if (parts.length !== 3) return null
     const payloadJson = atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'))
-    const payload = JSON.parse(payloadJson) as { exp: number; data: any }
-    if (!payload?.data) return null
-    if (payload.exp && payload.exp * 1000 < Date.now()) {
-      logout()
-      return null
-    }
-    return {
-      user_id: Number(payload.data.user_id),
-      rol_id: Number(payload.data.rol_id),
-      empresa_id: payload.data.empresa_id != null ? Number(payload.data.empresa_id) : null,
-      email: String(payload.data.email ?? ''),
-      exp: Number(payload.exp ?? 0),
-    }
+    const payload = JSON.parse(payloadJson)
+    if (!payload?.data || typeof payload.exp !== 'number') return null
+    return payload
   } catch {
     return null
+  }
+}
+
+export function isTokenExpired(): boolean {
+  const token = getRawToken()
+  if (!token) return true
+  const payload = decodePayload(token)
+  if (!payload) return true
+  return payload.exp * 1000 <= Date.now()
+}
+
+export function hasToken(): boolean {
+  if (typeof window === 'undefined') return false
+  const token = localStorage.getItem(TOKEN_KEY)
+  if (!token) return false
+  if (isTokenExpired()) {
+    logout()
+    return false
+  }
+  return true
+}
+
+export function enforceAuth(): boolean {
+  if (typeof window === 'undefined') return false
+  if (!hasToken()) {
+    logout()
+    redirectToLogin()
+    return false
+  }
+  return true
+}
+
+export function getSession(): Session | null {
+  if (typeof window === 'undefined') return null
+  const token = localStorage.getItem(TOKEN_KEY)
+  if (!token) return null
+  const payload = decodePayload(token)
+  if (!payload) {
+    logout()
+    return null
+  }
+  if (payload.exp * 1000 <= Date.now()) {
+    logout()
+    redirectToLogin()
+    return null
+  }
+  return {
+    user_id: Number(payload.data.user_id),
+    rol_id: Number(payload.data.rol_id),
+    empresa_id: payload.data.empresa_id != null ? Number(payload.data.empresa_id) : null,
+    email: String(payload.data.email ?? ''),
+    exp: Number(payload.exp ?? 0),
   }
 }
 

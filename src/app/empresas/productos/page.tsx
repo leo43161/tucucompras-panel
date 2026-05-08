@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, Loader2, Pencil, Plus, Package } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { hasToken, getSession } from '@/services/auth'
+import { useAuthGuard } from '@/hooks/useAuthGuard'
 import { listEmpresas } from '@/services/empresas'
 import { ProductoList } from '@/components/productos/ProductoList'
 import { EditEmpresaDialog } from '@/components/empresas/EditEmpresaDialog'
@@ -13,6 +14,7 @@ import { Topbar } from '@/components/Topbar'
 import type { Empresa } from '@/types/domain'
 
 function ProductosContent() {
+  useAuthGuard()
   const router = useRouter()
   const searchParams = useSearchParams()
   const [editingEmpresa, setEditingEmpresa] = useState<Empresa | null>(null)

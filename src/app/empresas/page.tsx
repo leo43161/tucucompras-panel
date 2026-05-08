@@ -11,6 +11,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { listEmpresas, deleteEmpresa } from '@/services/empresas'
 import { hasToken, getSession } from '@/services/auth'
+import { useAuthGuard } from '@/hooks/useAuthGuard'
 import { CreateEmpresaDialog } from '@/components/empresas/CreateEmpresaDialog'
 import { EditEmpresaDialog } from '@/components/empresas/EditEmpresaDialog'
 import { EmpresaCard } from '@/components/empresas/EmpresaCard'
@@ -19,6 +20,7 @@ import { Button } from '@/components/ui/button'
 import type { Empresa } from '@/types/domain'
 
 export default function EmpresasPage() {
+  useAuthGuard()
   const router = useRouter()
   const qc = useQueryClient()
   const [editing, setEditing] = useState<Empresa | null>(null)

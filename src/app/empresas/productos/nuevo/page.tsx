@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ArrowLeft, Loader2, Sparkles, PencilLine, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { hasToken, getSession } from '@/services/auth'
+import { useAuthGuard } from '@/hooks/useAuthGuard'
 import { BatchUploader } from '@/components/productos/BatchUploader'
 import { BatchEditor } from '@/components/productos/BatchEditor'
 import { ManualProductForm } from '@/components/productos/ManualProductForm'
@@ -14,6 +15,7 @@ import type { ProductoDraft } from '@/types/batch'
 type Mode = 'ia' | 'manual'
 
 function NuevoContent() {
+  useAuthGuard()
   const router = useRouter()
   const searchParams = useSearchParams()
   const [mode, setMode] = useState<Mode>('ia')
